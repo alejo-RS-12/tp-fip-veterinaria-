@@ -2,9 +2,9 @@ import{IDgenerador} from"./generadorID";
 import * as readline from 'readline';
 
 export class Veterinaria{
-    private _nombre: string;
-    private _direccion: string;
-    private _ID: number;
+    protected _nombre: string;
+    protected _direccion: string;
+    protected _ID: number;
 
     
     constructor(nombre: string, direccion: string){
