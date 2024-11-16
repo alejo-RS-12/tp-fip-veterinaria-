@@ -1,57 +1,18 @@
-import{IDgenerador} from"./generadorID";
-import * as readline from 'readline';
-
-
 export class Paciente {
-    public id: number
+    public id: number; // ID compartido con el dueño
     public nombre: string;
-    public especie: string
-    public idDuenio: number;
+    public especie: string;
 
-    
-    constructor(nombre:string, especie: string, idDuenio: number) {
-        this.id = IDgenerador.generateUnicoId();
+    constructor(nombre: string, especie: string, idDuenio: number) {
+        this.id = idDuenio; // Vincula el ID del dueño
         this.nombre = nombre;
-        this.especie = especie.toLowerCase() === 'perro' || especie.toLowerCase() === 'gato' ? especie : 'exótica';
-        this.idDuenio = idDuenio;
+        this.especie = this.categorizarEspecie(especie);
     }
 
-    modificarDatos(nombre: string, especie: string): void {
-        this.nombre = nombre;
-        this.especie = especie.toLowerCase() === 'perro' || especie.toLowerCase() === 'gato' ? especie : 'exótica';
+    private categorizarEspecie(especie: string): string {// evalua si la especie ingresada es felino o canino, sino es exotico
+        const especieNormalizada = especie.toLowerCase();
+        if (especieNormalizada === "felino") return "Felino";
+        if (especieNormalizada === "canino") return "Canino";
+        return "Exótico"; // Predeterminado para especies no conocidas
     }
-
-    public getId(): number {
-        return this.id;
-    }
-
-    public setId(id: number): void {
-        this.id = id;
-    }
-
-    public getNombre(): string {
-        return this.nombre;
-    }
-
-    public setNombre(nombre: string): void {
-        this.nombre = nombre;
-    }
-
-    public getEspecie(): string {
-        return this.especie;
-    }
-
-    public setEspecie(especie: string): void {
-        this.especie = especie;
-    }
-
-    public getIdDuenio(): number {
-        return this.idDuenio;
-    }
-
-    public setIdDuenio(idDuenio: number): void {
-        this.idDuenio = idDuenio;
-    }
-
-
 }
