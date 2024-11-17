@@ -1,45 +1,40 @@
-import { IDgenerador } from "./generadorID"; // Cambiar a "IDGenerador" con G mayúscula
+import { Veterinaria } from "./veterinaria";
+import { IDgenerador } from "./generadorID"; // Cambiar a "IDGenerador" con mayúscula?
 
-export class Proveedor {
-    private _id: number;
-    private _nombre: string;
-    private _telefono: string;
+export class Proveedor extends Veterinaria {
+    private id: number;
+    private telefono: string;
 
-    constructor(nombre: string, telefono: string) {
-        this._id = IDgenerador.generateUnicoId();
-        this._nombre = nombre;
-        this._telefono = telefono;
+    constructor(nombre: string, direccion: string, telefono: string) {
+        super(nombre, direccion);
+        this.id = IDgenerador.generateUnicoId();
+        this.telefono = telefono;
     }
 
     // Getters
-    get id(): number {
-        return this._id;
+    getId(): number {
+        return this.id;
     }
 
-    get nombre(): string {
-        return this._nombre;
-    }
-
-    get telefono(): string {
-        return this._telefono;
+    getTelefono(): string {
+        return this.telefono;
     }
 
     // Setters
-    set nombre(nuevoNombre: string) {
-        this._nombre = nuevoNombre;
+    setTelefono(nuevoTelefono: string) {
+        this.telefono = nuevoTelefono;
     }
 
-    set telefono(nuevoTelefono: string) {
-        this._telefono = nuevoTelefono;
-    }
-
-    // Método para actualizar el nombre
+    // Métodos de actualización
     actualizarNombre(nuevoNombre: string): void {
-        this.nombre = nuevoNombre; 
+        this.nombre = nuevoNombre; // setter heredado de `Veterinaria` ¿debería ser private?
     }
 
-    // Método para actualizar el teléfono
+    actualizarDireccion(nuevaDireccion: string): void {
+        this.direccion = nuevaDireccion; // setter heredado de `Veterinaria`
+    }
+
     actualizarTelefono(nuevoTelefono: string): void {
-        this.telefono = nuevoTelefono; 
+        this.setTelefono(nuevoTelefono);
     }
 }
