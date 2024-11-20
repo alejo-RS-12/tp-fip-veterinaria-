@@ -1,57 +1,61 @@
 import { Veterinaria } from "./veterinaria";
 import { Clientes } from "./clientes";
 import { Paciente } from "./Paciente";
+import { Proveedor } from "./Provedores";
 
 export class RedDeVeterinarias {
     public veterinarias: Veterinaria[] = [];
     public clientes: Clientes[] = [];
     public pacientes: Paciente[] = [];
+    public proveedores: Proveedor[] = []; // Nuevo arreglo para proveedores
 
-    agregarVeterinaria(veterinaria: Veterinaria): void {//recibe un objeto veterinaria como parametro 
-        this.veterinarias.push(veterinaria);// lo agrega al arreglo veterinaria 
-        console.log(`Veterinaria "${veterinaria.nombre}" agregada a la red.`); // se imprime un mesaje de confirmacion 
+    // Gestión de veterinarias
+    agregarVeterinaria(veterinaria: Veterinaria): void {
+        this.veterinarias.push(veterinaria);
+        console.log(`Veterinaria "${veterinaria.nombre}" agregada a la red.`);
     }
 
-    listarVeterinarias(): void {// muestra por cosola la lista de veterinarias alamacenadas 
+    listarVeterinarias(): void {
         console.log("\nNº ORDEN || NOMBRE VETERINARIA || DIRECCIÓN");
         this.veterinarias.forEach((veterinaria, index) => {
             console.log(`${index + 1}. ${veterinaria.nombre} - ${veterinaria.direccion}`);
         });
     }
 
-    modificarVeterinaria(index: number, nuevoNombre: string, nuevaDireccion: string): void {// modifica los datos de una veterinaria seleccionada por el index
-        if (index >= 0 && index < this.veterinarias.length) {// se valida que el index sea valido antes de realizar cambios
+    modificarVeterinaria(index: number, nuevoNombre: string, nuevaDireccion: string): void {
+        if (index >= 0 && index < this.veterinarias.length) {
             const vet = this.veterinarias[index];
             vet.nombre = nuevoNombre;
             vet.direccion = nuevaDireccion;
-            console.log(`Veterinaria "${vet.nombre}" modificada correctamente.`);// se actualiza el nombre y direccion
+            console.log(`Veterinaria "${vet.nombre}" modificada correctamente.`);
         } else {
             console.log("Índice inválido.");
         }
     }
 
-    eliminarVeterinaria(index: number): void {// elimina una veterinaria del arreglo por su indice
+    eliminarVeterinaria(index: number): void {
         if (index >= 0 && index < this.veterinarias.length) {
-            const vet = this.veterinarias.splice(index, 1)[0];// se usa splice para remover el elemento y mostrarlo en un mesanje de confiamcion
+            const vet = this.veterinarias.splice(index, 1)[0];
             console.log(`Veterinaria "${vet.nombre}" eliminada correctamente.`);
         } else {
             console.log("Índice inválido.");
-        }// el metodo slice se utiliza para modificar un arreglo, ya sea eliminar o reemplazar
+        }
     }
 
-    agregarCliente(cliente: Clientes): void {// agrega un cliente
+    // Gestión de clientes
+    agregarCliente(cliente: Clientes): void {
         this.clientes.push(cliente);
         console.log(`Cliente "${cliente.nombre}" agregado correctamente.`);
     }
 
-    listarClientes(): void {// lista a los clientes almacenados 
+    listarClientes(): void {
         console.log("\nNº ORDEN || NOMBRE CLIENTE || ID || VIP");
         this.clientes.forEach((cliente, index) => {
             console.log(`${index + 1}. ${cliente.nombre} - ${cliente._ID} - VIP: ${cliente.vip}`);
         });
     }
 
-    modificarCliente(index: number, nuevoNombre: string, nuevaDireccion: string): void {// modifica un cliente 
+    modificarCliente(index: number, nuevoNombre: string, nuevaDireccion: string): void {
         if (index >= 0 && index < this.clientes.length) {
             const cliente = this.clientes[index];
             cliente.nombre = nuevoNombre;
@@ -62,7 +66,7 @@ export class RedDeVeterinarias {
         }
     }
 
-    eliminarCliente(index: number): void {// elimina un cliente
+    eliminarCliente(index: number): void {
         if (index >= 0 && index < this.clientes.length) {
             const cliente = this.clientes.splice(index, 1)[0];
             console.log(`Cliente "${cliente.nombre}" eliminado correctamente.`);
@@ -71,15 +75,59 @@ export class RedDeVeterinarias {
         }
     }
 
-    agregarPaciente(paciente: Paciente): void {// agrega un paciente al nuevo arreglo
+    // Gestión de pacientes
+    agregarPaciente(paciente: Paciente): void {
         this.pacientes.push(paciente);
         console.log(`Paciente "${paciente.nombre}" de tipo ${paciente.especie} agregado correctamente.`);
     }
 
-    listarPacientes(): void {// lista a los pacientes almacenados
+    listarPacientes(): void {
         console.log("\nNº ORDEN || NOMBRE PACIENTE || ID DUEÑO || ESPECIE");
         this.pacientes.forEach((paciente, index) => {
             console.log(`${index + 1}. ${paciente.nombre} - ID Dueño: ${paciente.id} - Especie: ${paciente.especie}`);
         });
+    }
+
+    // Gestión de proveedores
+    agregarProveedor(proveedor: Proveedor): void {
+        this.proveedores.push(proveedor);
+        console.log(`Proveedor "${proveedor.getNombre()}" agregado correctamente.`);
+    }
+
+    listarProveedores(): void {
+        console.log("\nNº ORDEN || NOMBRE PROVEEDOR || DIRECCIÓN || TELÉFONO || ACTIVO");
+        this.proveedores.forEach((proveedor, index) => {
+            console.log(
+                `${index + 1}. ${proveedor.getNombre()} - ${proveedor.getDireccion()} - ${proveedor.getTelefono()} - Activo: ${proveedor.isActivo()}`
+            );
+        });
+    }
+
+    modificarProveedor(index: number, nuevoNombre?: string, nuevaDireccion?: string, nuevoTelefono?: string): void {
+        if (index >= 0 && index < this.proveedores.length) {
+            const proveedor = this.proveedores[index];
+            if (!proveedor.isActivo()) {
+                console.log("El proveedor seleccionado está inactivo y no puede ser modificado.");
+                return;
+            }
+
+            if (nuevoNombre) proveedor.actualizarNombre(nuevoNombre);
+            if (nuevaDireccion) proveedor.actualizarDireccion(nuevaDireccion);
+            if (nuevoTelefono) proveedor.actualizarTelefono(nuevoTelefono);
+
+            console.log(`Proveedor "${proveedor.getNombre()}" modificado correctamente.`);
+        } else {
+            console.log("Índice inválido.");
+        }
+    }
+
+    darDeBajaProveedor(index: number): void {
+        if (index >= 0 && index < this.proveedores.length) {
+            const proveedor = this.proveedores[index];
+            proveedor.darDeBaja();
+            console.log(`Proveedor "${proveedor.getNombre()}" dado de baja correctamente.`);
+        } else {
+            console.log("Índice inválido.");
+        }
     }
 }
