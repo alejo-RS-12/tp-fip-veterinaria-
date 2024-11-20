@@ -1,7 +1,7 @@
 import { Veterinaria } from "./veterinaria";
 import { Clientes } from "./clientes";
 import { Paciente } from "./Paciente";
-import { Proveedor } from "./Provedores";
+import { Proveedor } from "./Proveedores";
 
 export class RedDeVeterinarias {
     public veterinarias: Veterinaria[] = [];
