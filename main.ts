@@ -5,61 +5,188 @@ import { Clientes } from "./clientes";
 import { Paciente } from "./Paciente";
 import { Proveedor } from "./Proveedores";
 
-// Se instancia la red principal de veterinarias, que contiene toda la información.
+// Configuración de la red de veterinarias.
 const red = new RedDeVeterinarias();
+// carga de datos iniciales
+const cargarDatosIniciales = () => {
+    // Veterinarias precargadas.
+    red.agregarVeterinaria(new Veterinaria("Veterinaria Central", "Av. Principal 123"));
+    red.agregarVeterinaria(new Veterinaria("PetCare", "Calle Secundaria 45"));
 
-// Configuración de la interfaz de entrada/salida para interactuar con el usuario.
+    // Clientes precargados.
+    red.agregarCliente(new Clientes(123456789, 1, "Juan Pérez", "Calle A 10", false));
+    red.agregarCliente(new Clientes(987654321, 2, "María López", "Calle B 20", true));
+
+    // Pacientes precargados.
+    red.agregarPaciente(new Paciente("Firulais", "canino", 1));
+    red.agregarPaciente(new Paciente("Michi", "felino", 2));
+
+    // Proveedores precargados.
+    red.agregarProveedor(new Proveedor("Proveedor A", "Zona Industrial 8", "456123789"));
+    red.agregarProveedor(new Proveedor("Proveedor B", "Zona Comercial 15", "789456123"));
+};
+
+// Configuración de la interfaz de entrada/salida.
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
-// Función que permite hacer preguntas al usuario y manejar la respuesta como una promesa.
+// Función para manejar preguntas.
 const preguntar = (pregunta: string): Promise<string> => {
     return new Promise((resolve) => rl.question(pregunta, resolve));
 };
 
-// Función principal que controla el menú del sistema.
+// Función principal.
 const iniciar = async () => {
+    
+    cargarDatosIniciales();// se muestran los datos precargados
+
     console.log("¡Bienvenido al sistema de gestión de veterinarias!\n");
 
-    let continuar = true; // Controla si el programa sigue corriendo.
+    let continuar = true;
 
-    // Bucle principal del programa.
     while (continuar) {
         console.log("\n¿Qué desea hacer?");
-        console.log("1. Agregar una nueva veterinaria");
-        console.log("2. Agregar un nuevo cliente");
-        console.log("3. Agregar un nuevo paciente");
-        console.log("4. Listar veterinarias");
-        console.log("5. Listar clientes");
-        console.log("6. Listar pacientes");
-        console.log("7. Modificar veterinaria");
-        console.log("8. Eliminar veterinaria");
-        console.log("9. Modificar cliente");
-        console.log("10. Eliminar cliente");
-        console.log("11. Gestionar proveedores");
-        console.log("12. Salir");
+        console.log("1. Gestionar Veterinarias");
+        console.log("2. Gestionar Clientes");
+        console.log("3. Gestionar Pacientes");
+        console.log("4. Gestionar Proveedores");
+        console.log("5. Salir");
 
-        // Captura la opción del usuario.
-        const opcion = await preguntar("\nIngrese una opción: ");
-
-        // Evalúa la opción seleccionada.
+        const opcion = await preguntar("Seleccione una opción: ");
         switch (opcion) {
-            case "1": // Agregar una nueva veterinaria.
-                const nombreVet = await preguntar("Ingrese el nombre de la veterinaria: ");
-                const direccionVet = await preguntar("Ingrese la dirección de la veterinaria: ");
-                red.agregarVeterinaria(new Veterinaria(nombreVet, direccionVet));
+            case "1":
+                await gestionarVeterinarias();
                 break;
-
-            case "2": // Agregar un nuevo cliente.
-                const nombreCliente = await preguntar("Ingrese el nombre del cliente: ");
-                const direccionCliente = await preguntar("Ingrese la dirección del cliente: ");
-                const telefonoCliente = parseInt(await preguntar("Ingrese el teléfono del cliente: "), 10);
-                red.agregarCliente(new Clientes(telefonoCliente, 0, nombreCliente, direccionCliente, false));
+            case "2":
+                await gestionarClientes();
                 break;
+            case "3":
+                await gestionarPacientes();
+                break;
+            case "4":
+                await gestionarProveedores();
+                break;
+            case "5":
+                continuar = false;
+                console.log("¡Gracias por darnos si tiempo!");
+                break;
+            default:
+                console.log("Opción no válida. Intente nuevamente.");
+        }
+    }
 
-            case "3": // Agregar un nuevo paciente.
+    rl.close();
+};
+
+// Submenú para gestionar veterinarias.
+const gestionarVeterinarias = async () => {
+    let continuar = true;
+
+    while (continuar) {
+        console.log("\nGestión de Veterinarias:");
+        console.log("1. Agregar");
+        console.log("2. Listar");
+        console.log("3. Modificar");
+        console.log("4. Eliminar");
+        console.log("5. Volver al menú principal");
+
+        const opcion = await preguntar("Seleccione una opción: ");
+        switch (opcion) {
+            case "1":
+                const nombre = await preguntar("Nombre: ");
+                const direccion = await preguntar("Dirección: ");
+                red.agregarVeterinaria(new Veterinaria(nombre, direccion));
+                console.log("Veterinaria agregada exitosamente.");
+                break;
+            case "2":
+                red.listarVeterinarias();
+                break;
+            case "3":
+                red.listarVeterinarias();
+                const indexModificar = parseInt(await preguntar("Seleccione el índice: "), 10) - 1;
+                const nuevoNombre = await preguntar("Nuevo nombre: ");
+                const nuevaDireccion = await preguntar("Nueva dirección: ");
+                red.modificarVeterinaria(indexModificar, nuevoNombre, nuevaDireccion);
+                console.log("Veterinaria modificada.");
+                break;
+            case "4":
+                red.listarVeterinarias();
+                const indexEliminar = parseInt(await preguntar("Seleccione el índice: "), 10) - 1;
+                red.eliminarVeterinaria(indexEliminar);
+                console.log("Veterinaria eliminada.");
+                break;
+            case "5":
+                continuar = false;
+                break;
+            default:
+                console.log("Opción no válida.");
+        }
+    }
+};
+
+// Submenú para gestionar clientes.
+const gestionarClientes = async () => {
+    let continuar = true;
+
+    while (continuar) {
+        console.log("\nGestión de Clientes:");
+        console.log("1. Agregar");
+        console.log("2. Listar");
+        console.log("3. Modificar");
+        console.log("4. Eliminar");
+        console.log("5. Volver al menú principal");
+
+        const opcion = await preguntar("Seleccione una opción: ");
+        switch (opcion) {
+            case "1":
+                const nombre = await preguntar("Nombre: ");
+                const direccion = await preguntar("Dirección: ");
+                const telefono = parseInt(await preguntar("Teléfono: "), 10);
+                red.agregarCliente(new Clientes(telefono, 0, nombre, direccion, false));
+                console.log("Cliente agregado.");
+                break;
+            case "2":
+                red.listarClientes();
+                break;
+            case "3":
+                red.listarClientes();
+                const indexModificar = parseInt(await preguntar("Seleccione el índice: "), 10) - 1;
+                const nuevoNombre = await preguntar("Nuevo nombre: ");
+                const nuevaDireccion = await preguntar("Nueva dirección: ");
+                red.modificarCliente(indexModificar, nuevoNombre, nuevaDireccion);
+                console.log("Cliente modificado.");
+                break;
+            case "4":
+                red.listarClientes();
+                const indexEliminar = parseInt(await preguntar("Seleccione el índice: "), 10) - 1;
+                red.eliminarCliente(indexEliminar);
+                console.log("Cliente eliminado.");
+                break;
+            case "5":
+                continuar = false;
+                break;
+            default:
+                console.log("Opción no válida.");
+        }
+    }
+};
+
+// Submenús para pacientes y proveedores (idénticos al ejemplo inicial).
+const gestionarPacientes = async () => {
+    let continuar = true;
+
+    while (continuar) {
+        console.log("\nGestión de Pacientes:");
+        console.log("1. agregar un paciente");
+        console.log("2. Listar Pacientes");
+        console.log("3. Volver al menú principal");
+
+        const opcion = await preguntar("Seleccione una opción: ");
+
+        switch (opcion) {
+            case "1": // Agregar un nuevo paciente.
                 red.listarClientes(); // Lista a los clientes existentes.
                 const clienteIndex = parseInt(await preguntar("Seleccione el número del cliente (dueño): "), 10) - 1;
 
@@ -71,63 +198,21 @@ const iniciar = async () => {
                 } else {
                     console.log("Índice de cliente inválido.");
                 }
-                break;
+                break;;
 
-            case "4": // Listar todas las veterinarias.
-                red.listarVeterinarias();
-                break;
-
-            case "5": // Listar todos los clientes.
-                red.listarClientes();
-                break;
-
-            case "6": // Listar todos los pacientes.
+                case "2": // Listar todos los pacientes.
                 red.listarPacientes();
                 break;
 
-            case "7": // Modificar información de una veterinaria.
-                red.listarVeterinarias(); // Lista las veterinarias existentes.
-                const vetIndex = parseInt(await preguntar("Seleccione el número de la veterinaria a modificar: "), 10) - 1;
-                const nuevoNombreVet = await preguntar("Ingrese el nuevo nombre de la veterinaria: ");
-                const nuevaDireccionVet = await preguntar("Ingrese la nueva dirección de la veterinaria: ");
-                red.modificarVeterinaria(vetIndex, nuevoNombreVet, nuevaDireccionVet);
-                break;
 
-            case "8": // Eliminar una veterinaria.
-                red.listarVeterinarias(); // Lista las veterinarias existentes.
-                const eliminarVetIndex = parseInt(await preguntar("Seleccione el número de la veterinaria a eliminar: "), 10) - 1;
-                red.eliminarVeterinaria(eliminarVetIndex);
-                break;
-
-            case "9": // Modificar información de un cliente.
-                red.listarClientes(); // Lista los clientes existentes.
-                const clienteModIndex = parseInt(await preguntar("Seleccione el número del cliente a modificar: "), 10) - 1;
-                const nuevoNombreCliente = await preguntar("Ingrese el nuevo nombre del cliente: ");
-                const nuevaDireccionCliente = await preguntar("Ingrese la nueva dirección del cliente: ");
-                red.modificarCliente(clienteModIndex, nuevoNombreCliente, nuevaDireccionCliente);
-                break;
-
-            case "10": // Eliminar un cliente.
-                red.listarClientes(); // Lista los clientes existentes.
-                const eliminarClienteIndex = parseInt(await preguntar("Seleccione el número del cliente a eliminar: "), 10) - 1;
-                red.eliminarCliente(eliminarClienteIndex);
-                break;
-
-            case "11": // Gestionar proveedores.
-                await gestionarProveedores(); // Llama al submenú de proveedores.
-                break;
-
-            case "12": // Salir del sistema.
-                console.log("¡Gracias por usar el sistema!");
-                continuar = false; // Finaliza el bucle.
+            case "3": // Volver al menú principal.
+                continuar = false;
                 break;
 
             default: // Manejo de entradas no válidas.
                 console.log("Opción no válida. Intente nuevamente.");
         }
     }
-
-    rl.close(); // Cierra la interfaz de entrada/salida.
 };
 
 // Submenú para gestionar proveedores.
@@ -181,5 +266,5 @@ const gestionarProveedores = async () => {
     }
 };
 
-// Inicia la ejecución del programa.
+// Iniciar el programa.
 iniciar();
