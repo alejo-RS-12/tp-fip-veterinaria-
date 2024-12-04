@@ -44,7 +44,7 @@ const iniciar = async () => {
     
     cargarDatosIniciales();// se muestran los datos precargados
 
-    console.log("¡Bienvenido al sistema de gestión de veterinarias!\n");
+    console.log("\n¡Bienvenido al sistema de gestión de veterinarias!\n");
 
     let continuar = true;
 
